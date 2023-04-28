@@ -1,0 +1,4 @@
+$include /etc/inputrc
+
+# make file/folder autocompletion case insensitive
+set completion-ignore-case On

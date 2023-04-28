@@ -1,0 +1,22 @@
+[user]
+	email = {{ keepassxcAttribute "/Main/GitHub" "Username" }}
+	name = Arjun Patel
+	signingkey = {{ keepassxcAttribute "/Local/GPG Key" "Public key signature" }}
+[commit]
+	gpgsign = true
+
+[init]
+	defaultBranch = master
+
+[color]
+	ui = auto
+
+[alias]
+	# Fancy looking commit log
+	lg = log --all --graph --decorate --oneline
+	last = log --all --graph --decorate --oneline -10
+
+# taken from: https://github.com/x-motemen/ghq
+
+[ghq]
+	root = ~/Documents/Projects
