@@ -3,15 +3,24 @@
 {{/* FEATURE FLAGS */}}
 
 {{- $personal := false -}}{{/* true if this machine should have personal secrets */}}
+{{- $workspace := false -}}{{/* true if we are currently in my workspace container */}}
 {{- "" -}}
 
 {{/* ============================================================= */}}
 {{/* DETECTING CURRENT SETUP */}}
 
-{{- if eq .chezmoi.hostname "toolbox" -}}
+{{- if eq .chezmoi.hostname "Workspace" -}}
 {{-   $personal = true -}}
-{{- else if eq .chezmoi.hostname "inspiron" -}}
+{{-   $workspace = true -}}
+{{- end -}}
+{{- if eq .chezmoi.hostname "inspiron" -}}
 {{-   $personal = true -}}
+{{-   $workspace = false -}}
+{{- end -}}
+
+{{- $email := "arjun@aspatel.com" -}}
+{{- if not $personal -}}
+{{-   $email = "invalid@redacted.null" -}}
 {{- end -}}
 
 {{/* ============================================================= */}}
@@ -19,19 +28,13 @@
 
 {{/* ------------------------- */}}
 
-{{- if $personal -}}
 [data]
-email = "arjun@aspatel.com"
+    email = {{ $email | quote }}
+    personal = {{ $personal }}
+    workspace = {{ $workspace }}
+
 [keepassxc]
-database = "/var/home/apatel/Documents/Nextcloud/Inspiron/Passwords.kdbx"
-args = [ "--key-file", "/var/home/apatel/Documents/Key" ]
-{{- end -}}
-
-{{/* ------------------------- */}}
-
-{{- if not $personal -}}
-[data]
-email = "invalid@redacted.null"
-{{- end -}}
+    database = "/var/home/apatel/Documents/Nextcloud/Inspiron/Passwords.kdbx"
+    args = [ "--key-file", "/var/home/apatel/Documents/Key" ]
 
 {{/* ------------------------- */}}

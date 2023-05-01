@@ -16,7 +16,9 @@
 	lg = log --all --graph --decorate --oneline
 	last = log --all --graph --decorate --oneline -10
 
-# taken from: https://github.com/x-motemen/ghq
-
 [ghq]
+{{ if .workspace }}
+	root = ~/Projects
+{{ else }}
 	root = ~/Documents/Projects
+{{ end }}
