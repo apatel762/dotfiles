@@ -1,0 +1,52 @@
+#!/usr/bin/env bash
+
+APPLICATION_IDS_FILE="${XDG_CONFIG_HOME:-$HOME/.config}"/.FLATHUB
+
+# Check if a file ends with a newline
+if [ "$(tail -c 1 "$APPLICATION_IDS_FILE")" != "" ]; then
+    echo "Error: The application IDs file does not end with a newline."
+    echo "To fix this issue, you can run the following command:"
+    echo ""
+    echo "echo >> \"$APPLICATION_IDS_FILE\""
+    echo ""
+    exit 1
+fi
+
+
+# Check if the Flathub repository is added
+if ! flatpak remotes | grep -q "flathub"; then
+    echo "Adding Flathub repository..."
+    flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+else
+    echo "Already installed: flathub https://flathub.org/repo/flathub.flatpakrepo"
+fi
+
+# Check if the FLATHUB file exists
+if [[ ! -f "$APPLICATION_IDS_FILE" ]]; then
+    echo "file not found: $APPLICATION_IDS_FILE"
+    exit 1
+fi
+
+# Read the FLATHUB file and install each application if not already installed
+while IFS= read -r APPLICATION_ID; do
+    if flatpak list --user | grep -q "$APPLICATION_ID"; then
+        echo "Already installed: $APPLICATION_ID"
+    else
+        flatpak install --user -y flathub "$APPLICATION_ID"
+    fi
+done < "$APPLICATION_IDS_FILE"
+
+notify-send --app-name="flatpak-bootstrap" "Flatpak bootstrap complete" "All desired applications are present."
+
+# Integrate with systemd using the systemd files
+# elsewhere in this repo
+systemctl --user daemon-reload
+if ! systemctl --user is-enabled flatpak-drift.service >/dev/null 2>&1; then
+    systemctl --user enable flatpak-drift.service
+fi
+if ! systemctl --user is-enabled flatpak-drift.timer >/dev/null 2>&1; then
+    systemctl --user enable flatpak-drift.timer
+fi
+if ! systemctl --user is-active flatpak-drift.timer >/dev/null 2>&1; then
+    systemctl --user start flatpak-drift.timer
+fi

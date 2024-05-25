@@ -3,6 +3,7 @@ com.github.tchx84.Flatseal
 com.google.Chrome
 com.mattjakeman.ExtensionManager
 com.spotify.Client
+com.vscodium.codium
 io.github.celluloid_player.Celluloid
 md.obsidian.Obsidian
 net.ankiweb.Anki

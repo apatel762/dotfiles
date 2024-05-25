@@ -1,0 +1,7 @@
+[Unit]
+Description=Check for Flatpak drift
+Documentation=man:flatpak(1)
+
+[Service]
+ExecStart=%h/.local/bin/flatpak-drift
+

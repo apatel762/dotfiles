@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+
+APPLICATION_IDS_FILE="${XDG_CONFIG_HOME:-$HOME/.config}"/.FLATHUB
+
+# Read the expected flatpaks
+expected_flatpaks=$(sort "$APPLICATION_IDS_FILE")
+
+# Get the list of installed flatpaks
+installed_flatpaks=$(flatpak --user list --app --columns=application | sort)
+
+# Convert the lists to arrays
+IFS=$'\n' read -rd '' -a expected_array <<<"$expected_flatpaks"
+IFS=$'\n' read -rd '' -a installed_array <<<"$installed_flatpaks"
+
+# Find missing flatpaks
+missing_flatpaks=()
+for expected in "${expected_array[@]}"; do
+  if ! [[ " ${installed_array[*]} " =~ " $expected " ]]; then
+    missing_flatpaks+=("$expected")
+  fi
+done
+
+# Find extra flatpaks
+extra_flatpaks=()
+for installed in "${installed_array[@]}"; do
+  if ! [[ " ${expected_array[*]} " =~ " $installed " ]]; then
+    extra_flatpaks+=("$installed")
+  fi
+done
+
+# Notify re: what needs to be installed.
+if [ ${#missing_flatpaks[@]} -ne 0 ]; then
+  missing_message="You need to install: "
+  for missing in "${missing_flatpaks[@]}"; do
+    missing_message+="$missing, "
+  done
+  missing_message+="please install any missing apps at your earliest convenience."
+  notify-send --app-name="flatpak-drift" "Missing applications" "$missing_message"
+fi
+
+# Notify re: what needs to be cleaned up (or documented)
+if [ ${#extra_flatpaks[@]} -ne 0 ]; then
+  extras_message="I don't recognise: "
+  for extra in "${extra_flatpaks[@]}"; do
+    extras_message+="$extra, "
+  done
+  extras_message+="please document them here: $APPLICATION_IDS_FILE."
+  notify-send --app-name="flatpak-drift" "Extra applications" "$extras_message"
+fi
+

@@ -33,3 +33,6 @@ chezmoi init --apply apatel762
 ```
 
 See [Start using chezmoi on your current machine](https://www.chezmoi.io/quick-start/#start-using-chezmoi-on-your-current-machine).
+
+TODO: should have more of a two-phase approach
+where -> init would load secrets into the `[data]` block and apply would render the templates using this data, that way, we only need to load the secrets once
