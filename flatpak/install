@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+
+DIR="$(dirname "$(realpath "$0")")"
+
+# Check if the Flathub repository is added
+if ! flatpak remotes | grep -q "flathub"; then
+    echo "Adding Flathub repository..."
+    flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+else
+    echo "Already installed: flathub https://flathub.org/repo/flathub.flatpakrepo"
+fi
+
+# Check if the FLATHUB file exists
+if [[ ! -f "$DIR"/FLATHUB ]]; then
+    echo "FLATHUB file not found!"
+    exit 1
+fi
+
+# Read the FLATHUB file and install each application if not already installed
+while IFS= read -r APPLICATION_ID; do
+    if flatpak list --user | grep -q "$APPLICATION_ID"; then
+        echo "Already installed: $APPLICATION_ID"
+    else
+        flatpak install --user -y flathub "$APPLICATION_ID"
+    fi
+done < "$DIR"/FLATHUB

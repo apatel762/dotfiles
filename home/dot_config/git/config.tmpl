@@ -1,5 +1,5 @@
 [user]
-	email = {{ keepassxcAttribute "/Main/GitHub" "Username" }}
+	email = {{ keepassxcAttribute "/Main/GitHub" "Email" }}
 	name = Arjun Patel
 	signingkey = {{ keepassxcAttribute "/Local/GPG Key" "Public key signature" }}
 [commit]
@@ -17,8 +17,5 @@
 	last = log --all --graph --decorate --oneline -10
 
 [ghq]
-{{ if .workspace }}
-	root = ~/Projects
-{{ else }}
-	root = ~/Documents/Projects
-{{ end }}
+	root = ~/Documents
+
