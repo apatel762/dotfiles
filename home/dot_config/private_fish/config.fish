@@ -1,4 +1,4 @@
 if status is-interactive
-    # initialising zoxide must happen at the *end* of the config
+    atuin init fish | source
     zoxide init fish | source
 end
