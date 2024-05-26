@@ -1,0 +1,8 @@
+[".local/share/fonts"]
+  type = "archive"
+  url = "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.2.1/IosevkaTerm.zip"
+  exact = true
+  include = ["IosevkaTermNerdFont-Medium.ttf"]
+
+  [".local/share/fonts".checksum]
+    sha256 = "4d2c7fc44f215cd762ceab5167aa13285f179e83f36d56a1129c2871b9552080"
