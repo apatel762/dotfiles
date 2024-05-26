@@ -1,40 +1,45 @@
+# ------------------------------------------------------------------ #
+# This file contains the heart of my dotfiles. All the credentials - #
+# and other configuration live here.                               - #
+#                                                                  - #
+# You can view available data using this command:                  - #
+#                                                                  - #
+#  chezmoi data | less                                             - #
+#                                                                  - #
+# By storing the data in this file, we only have to unlock our     - #
+# password vault once (to populate this file), and subsequent      - #
+# updates to our dotfiles can be applied without unlocking the     - #
+# vault.                                                           - #
+#                                                                  - #
+# This also means that if you rotate a secret, the one on your     - #
+# workstation will be invalid until you re-generate this file, AND - #
+# re-apply the dotfiles.                                           - #
+# ------------------------------------------------------------------ #
 
-{{/* ============================================================= */}}
-{{/* FEATURE FLAGS */}}
 
-{{- $personal := false -}}{{/* true if this machine should have personal secrets */}}
-{{- $workspace := false -}}{{/* true if we are currently in my workspace container */}}
-{{- "" -}}
-
-{{/* ============================================================= */}}
-{{/* DETECTING CURRENT SETUP */}}
-
-{{- if eq .chezmoi.hostname "Workspace" -}}
-{{-   $personal = true -}}
-{{-   $workspace = true -}}
-{{- end -}}
-{{- if eq .chezmoi.hostname "inspiron" -}}
-{{-   $personal = true -}}
-{{-   $workspace = false -}}
-{{- end -}}
-
-{{- $email := "arjun@aspatel.com" -}}
-{{- if not $personal -}}
-{{-   $email = "invalid@redacted.null" -}}
-{{- end -}}
-
-{{/* ============================================================= */}}
-{{/* CONFIGURATION */}}
-
-{{/* ------------------------- */}}
-
+# You can test any of these data values
+# using the below command:
+#
+#  chezmoi execute-template ''
+#
+# putting .git.email in two curly braces within the single quotes.
+#
 [data]
-    email = {{ $email | quote }}
-    personal = {{ $personal }}
-    workspace = {{ $workspace }}
 
+[data.git]
+email = "{{ keepassxcAttribute "/Main/GitHub" "Email" }}"
+name = "Arjun Patel"
+auth_token = "{{ keepassxcAttribute "/Main/GitHub" "Auth Token" }}"
+signing_key = "{{ keepassxcAttribute "/Local/GPG Key" "Public key signature" }}"
+
+
+# You can test these values using the below
+# command (the template path is slightly
+# different because these are built-in variables,
+# not custom ones):
+#
+#  chezmoi execute-template '{{ .chezmoi.config.keepassxc.database }}'
+#
 [keepassxc]
-    database = "/var/home/apatel/Documents/Passwords.kdbx"
-    args = [ "--key-file", "/var/home/apatel/Documents/Key" ]
-
-{{/* ------------------------- */}}
+    database = "{{ .chezmoi.homeDir }}/Documents/Passwords.kdbx"
+    args = [ "--key-file", "{{ .chezmoi.homeDir }}/Documents/Key" ]

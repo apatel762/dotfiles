@@ -1,7 +1,7 @@
 [user]
-	email = {{ keepassxcAttribute "/Main/GitHub" "Email" }}
-	name = Arjun Patel
-	signingkey = {{ keepassxcAttribute "/Local/GPG Key" "Public key signature" }}
+	email = {{ .git.email }}
+	name = {{ .git.name }}
+	signingkey = {{ .git.signing_key }}
 [commit]
 	gpgsign = true
 
@@ -17,4 +17,4 @@
 	last = log --all --graph --decorate --oneline -10
 
 [ghq]
-	root = ~/Documents
+	root = {{ .chezmoi.homeDir }}/Documents
