@@ -7,14 +7,13 @@ if [ -f /etc/bashrc ]; then
 	source /etc/bashrc
 fi
 
-# If not running interactively, don't do anything
+# The script will go no further if you
+# are running in a headless (i.e.
+# non-interactive) session.
 case $- in
 *i*) ;;
 *) return ;;
 esac
-
-# Uncomment the following line if you don't like systemctl's auto-paging feature:
-# export SYSTEMD_PAGER=
 
 # User specific aliases and functions
 if [ -d ~/.bashrc.d ]; then

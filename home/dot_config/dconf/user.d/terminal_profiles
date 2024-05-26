@@ -1,6 +1,6 @@
 # colours taken from [Mayccoll/Gogh](https://github.com/Mayccoll/Gogh)
-# host    =( 114 ) Mona Lisa
-# toolbox =( 157 ) Pixiefloss
+# host     = 45   Clone of Ubuntu
+# toolbox  = 13   Ayu Dark
 
 [org/gnome/terminal/legacy/profiles:]
 default='3593294f-b67f-4d64-b90e-5b7281edee75'
