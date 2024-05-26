@@ -1,6 +1,0 @@
-#!/usr/bin/env bash
-
-for file in "{{ .chezmoi.homeDir }}"/.config/dconf/user.d/*; do
-    echo "Loading dconf settings from $file"
-    dconf load / < "$file"
-done
