@@ -1,15 +1,11 @@
-# .bashrc
+#!/usr/bin/env bash
 
 # Source global definitions
-if [ -f /etc/bashrc ]; then
-	. /etc/bashrc
-fi
 
-# User specific environment
-if ! [[ "$PATH" =~ "$HOME/.local/bin:$HOME/bin:" ]]; then
-	PATH="$HOME/.local/bin:$HOME/bin:$PATH"
+if [ -f /etc/bashrc ]; then
+	# shellcheck source=/dev/null
+	source /etc/bashrc
 fi
-export PATH
 
 # If not running interactively, don't do anything
 case $- in
@@ -24,9 +20,19 @@ esac
 if [ -d ~/.bashrc.d ]; then
 	for rc in ~/.bashrc.d/*; do
 		if [ -f "$rc" ]; then
+			# shellcheck source=/dev/null
 			. "$rc"
 		fi
 	done
 fi
 
 unset rc
+
+# Enter `fish` shell if it is installed.
+if command -v fish &>/dev/null; then
+	if [[ $(ps --no-header --pid=$PPID --format=comm) != "fish" && -z ${BASH_EXECUTION_STRING} ]]; then
+		echo "Entering fish!"
+		shopt -q login_shell && LOGIN_OPTION='--login' || LOGIN_OPTION=''
+		exec fish "$LOGIN_OPTION"
+	fi
+fi
