@@ -41,6 +41,9 @@ notify-send --app-name="flatpak-bootstrap" "Flatpak bootstrap complete" "All des
 # Integrate with systemd using the systemd files
 # elsewhere in this repo
 systemctl --user daemon-reload
+
+# -- flatpak-drift --
+
 if ! systemctl --user is-enabled flatpak-drift.service >/dev/null 2>&1; then
     systemctl --user enable flatpak-drift.service
 fi
@@ -49,4 +52,16 @@ if ! systemctl --user is-enabled flatpak-drift.timer >/dev/null 2>&1; then
 fi
 if ! systemctl --user is-active flatpak-drift.timer >/dev/null 2>&1; then
     systemctl --user start flatpak-drift.timer
+fi
+
+# -- flatpak-user-update --
+
+if ! systemctl --user is-enabled flatpak-user-update.service >/dev/null 2>&1; then
+    systemctl --user enable flatpak-user-update.service
+fi
+if ! systemctl --user is-enabled flatpak-user-update.timer >/dev/null 2>&1; then
+    systemctl --user enable flatpak-user-update.timer
+fi
+if ! systemctl --user is-active flatpak-user-update.timer >/dev/null 2>&1; then
+    systemctl --user start flatpak-user-update.timer
 fi
