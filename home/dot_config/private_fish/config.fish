@@ -1,4 +1,5 @@
 if status is-interactive
-    atuin init fish | source
-    zoxide init fish | source
+    for file in ~/.config/fish/conf.d/*.fish
+        source $file
+    end
 end
