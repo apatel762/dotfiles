@@ -1,0 +1,7 @@
+[".local/bin"]
+    type = "archive"
+    url = "{{ output (print .chezmoi.sourceDir "/private_dot_local/bin/executable_jetbrains-toolbox-url") }}"
+    exact = false
+    include = ["*/jetbrains-toolbox"]
+    stripComponents = 1
+    refreshPeriod = "168h"
