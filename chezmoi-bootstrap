@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+# Wrapping the entire script in curly braces to ensure that
+# the whole thing is downloaded before it is executed.
+{
+
 XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
 XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
 
@@ -58,3 +62,5 @@ args = [ "--key-file", "$HOME/Documents/Key" ]
 EOL
 
 echo "Setup completed successfully."
+
+}

@@ -9,8 +9,10 @@ Managing the mutable directories on my machines.
 We are using `chezmoi` in a slightly non-standard way. As a result, we need to do some bootstrapping ourselves.
 
 ```bash
-./chezmoi-bootstrap
+curl -sL https://raw.githubusercontent.com/apatel762/dotfiles/master/chezmoi-bootstrap | sh
 ```
+
+After this script has completed, you can run the commands in the next section.
 
 ### `home`
 
