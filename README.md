@@ -4,18 +4,6 @@ Managing the mutable directories on my machines
 
 ## Usage
 
-### `var`
-
-This folder contains a view of the custom config that I want to mirror to `/var`.
-
-To apply the config, run the below command **on your host terminal session**:
-
-```bash
-sudo rsync -av ./var /
-```
-
-You may need to log out and log back in to see the changes.
-
 ### `home`
 
 Install chezmoi on your machine and run:
@@ -52,3 +40,15 @@ This will also set up `systemd` integration to do a couple of things:
 
 1. automatically update your apps every day.
 2. notify you when your installed apps have drifted from what's written in the configuration.
+
+### `var`
+
+This folder contains a view of the custom config that I want to mirror to `/var`.
+
+To apply the config, run the below command **on your host terminal session**:
+
+```bash
+sudo rsync -av ./var /
+```
+
+You may need to log out and log back in to see the changes.
