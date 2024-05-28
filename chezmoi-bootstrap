@@ -1,0 +1,60 @@
+#!/usr/bin/env bash
+
+XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
+XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
+
+CHEZMOI_DIR="$XDG_DATA_HOME/chezmoi"
+CHEZMOI_CONFIG_DIR="$XDG_CONFIG_HOME/chezmoi"
+CHEZMOI_CONFIG_FILE="$CHEZMOI_CONFIG_DIR/chezmoi.toml"
+
+function error_exit {
+    echo "$1" >&2
+    exit 1
+}
+
+# Check if we've already bootstrapped
+if [ -f "$CHEZMOI_CONFIG_FILE" ]; then
+    error_exit "chezmoi.toml already exists at $CHEZMOI_CONFIG_FILE. Exiting."
+fi
+
+mkdir -p "$XDG_DATA_HOME"
+mkdir -p "$CHEZMOI_CONFIG_DIR"
+
+# Check that we have set up KeePass and ssh-agent integration
+if ! ssh-add -L >/dev/null 2>&1; then
+    error_exit "No SSH keys found in the SSH agent. Please add your SSH key using 'ssh-add' and try again."
+fi
+
+# Check that the dotfiles have been downloaded
+if [ ! -d "$CHEZMOI_DIR/.git" ]; then
+    git clone git@github.com:apatel762/dotfiles.git "$CHEZMOI_DIR" || error_exit "Failed to clone repository."
+else
+    echo "Repository already cloned at $CHEZMOI_DIR."
+fi
+
+# Create and populate chezmoi.toml
+#
+# This is the most important step. Previously, we were letting
+# `chezmoi` template this information, but there are variables
+# in the `chezmoi` config file that require access to secrets
+# to be populated.
+#
+# As a result, we were stuck in a sort of race condition where
+# the `chezmoi init` command needed to create the config file
+# to proceed with everything else, but to create the config file,
+# it needed access to secrets (to populate the variables in the
+# file), and to get secret access, it needed to create the config
+# file, which has the secrets config... etc
+#
+# We are breaking the cycle here by manually writing a copy of
+# the config here, and then letting `chezmoi` take over after.
+#
+cat <<EOL > "$CHEZMOI_CONFIG_FILE"
+# This is the config base. It needs to be present before
+# the rest of the config is copied over.
+[keepassxc]
+database = "$HOME/Documents/Passwords.kdbx"
+args = [ "--key-file", "$HOME/Documents/Key" ]
+EOL
+
+echo "Setup completed successfully."

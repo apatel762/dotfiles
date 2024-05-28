@@ -1,15 +1,23 @@
 # dotfiles
 
-Managing the mutable directories on my machines
+Managing the mutable directories on my machines.
 
 ## Usage
 
-### `home`
+### Setup
 
-Install chezmoi on your machine and run:
+We are using `chezmoi` in a slightly non-standard way. As a result, we need to do some bootstrapping ourselves.
 
 ```bash
-chezmoi init apatel762
+./chezmoi-bootstrap
+```
+
+### `home`
+
+Run:
+
+```bash
+chezmoi init
 ```
 
 You will be prompted for the password to the KeePassXC vault. This command will read secrets from the vault and write them to the `chezmoi` configuration file. You can verify that this has worked by looking at the file:
@@ -45,9 +53,10 @@ This will also set up `systemd` integration to do a couple of things:
 
 This folder contains a view of the custom config that I want to mirror to `/var`.
 
-To apply the config, run the below command **on your host terminal session**:
+To apply the config, run the below command:
 
 ```bash
+# DO THIS ON YOUR HOST TERMINAL SESSION (i.e. not in your workspace container)
 sudo rsync -av ./var /
 ```
 

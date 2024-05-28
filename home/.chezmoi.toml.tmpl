@@ -1,13 +1,6 @@
-# You can test these values using the below
-# command (the template path is slightly
-# different because these are built-in variables,
-# not custom ones):
-#
-#  chezmoi execute-template '{{ .chezmoi.config.keepassxc.database }}'
-#
 [keepassxc]
-    database = "{{ .chezmoi.homeDir }}/Documents/Passwords.kdbx"
-    args = [ "--key-file", "{{ .chezmoi.homeDir }}/Documents/Key" ]
+database = "{{ .chezmoi.homeDir }}/Documents/Passwords.kdbx"
+args = [ "--key-file", "{{ .chezmoi.homeDir }}/Documents/Key" ]
 
 # ------------------------------------------------------------------ #
 # This file contains the heart of my dotfiles. All the credentials - #
@@ -27,15 +20,7 @@
 # re-apply the dotfiles.                                           - #
 # ------------------------------------------------------------------ #
 
-# You can test any of these data values
-# using the below command:
-#
-#  chezmoi execute-template ''
-#
-# putting .git.email in two curly braces within the single quotes.
-#
 [data]
-
 [data.git]
 email = "{{ keepassxcAttribute "/Main/GitHub" "Email" }}"
 name = "Arjun Patel"
