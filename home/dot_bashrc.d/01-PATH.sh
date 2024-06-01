@@ -23,3 +23,4 @@ prepend_to_path() {
 # example usage
 
 append_to_path "$HOME/.local/bin"
+append_to_path "$HOME/.local/share/JetBrains/Toolbox/scripts"
