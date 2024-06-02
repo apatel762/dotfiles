@@ -1,3 +1,12 @@
 #!/usr/bin/env bash
 
-find . -type f \( -name "*.bash" -o -name "*.sh" \) -print0 | xargs -0 shellcheck
+find . -type f \
+    \( \
+        -name "*.bash" \
+        -o \
+        -name "*.sh" \
+        -o \
+        -name "executable*" \
+    \) \
+    -print0 \
+    | xargs -0 shellcheck
