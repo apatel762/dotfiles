@@ -21,8 +21,19 @@ args = [ "--key-file", "{{ .chezmoi.homeDir }}/Documents/Key" ]
 # ------------------------------------------------------------------ #
 
 [data]
+
 [data.git]
 email = "{{ keepassxcAttribute "/Main/GitHub" "Email" }}"
 name = "Arjun Patel"
-auth_token = "{{ keepassxcAttribute "/Main/GitHub" "Auth Token" }}"
 signing_key = "{{ keepassxcAttribute "/Local/GPG Key" "Public key signature" }}"
+auth_token = "{{ keepassxcAttribute "/Main/GitHub" "Auth Token" }}"
+
+[data.mullvad]
+[data.mullvad.interface]
+device = "{{ keepassxcAttribute "/Main/Mullvad" "Device Name" }}"
+private_key = "{{ keepassxcAttribute "/Main/Mullvad" "Interface Private Key" }}"
+address = "{{ keepassxcAttribute "/Main/Mullvad" "Interface Address" }}"
+
+[data.mullvad.peer]
+public_key = "{{ keepassxcAttribute "/Main/Mullvad" "Peer Public Key" }}"
+endpoint = "{{ keepassxcAttribute "/Main/Mullvad" "Peer Endpoint" }}"

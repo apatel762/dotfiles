@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+
+# shellcheck source=home/private_dot_local/bin/executable_bash_common
+source "${HOME_ORIGINAL:-$HOME}"/.local/bin/bash_common
+
+if [ "$#" -ne 1 ]; then
+    die "Usage: $0 <wireguard-config-file>"
+fi
+
+please_install wg
+please_install wg-quick
+please_install nmcli
+
+CONFIG_FILE=$1
+INTERFACE=$(basename "$CONFIG_FILE" .conf)
+
+info "Checking Wireguard interface [$INTERFACE]"
+
+if nmcli connection show | grep -q "$INTERFACE"; then
+    log "All good"
+    exit 0
+fi
+
+log "Installing the config..."
+nmcli connection import type wireguard file "$CONFIG_FILE"
+
+# Verify the connection was added successfully
+if nmcli connection show | grep -q "$INTERFACE"; then
+    :
+else
+    die "Problem installing $INTERFACE ($CONFIG_FILE). Please investigate!"
+fi
