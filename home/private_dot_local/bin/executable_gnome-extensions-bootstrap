@@ -9,11 +9,13 @@ GNOME_EXTENSION_IDS_FILE="${XDG_CONFIG_HOME:-$HOME/.config}"/.GNOME_EXTENSIONS
 ensure_file "$GNOME_EXTENSION_IDS_FILE"
 ensure_newline "$GNOME_EXTENSION_IDS_FILE"
 
+info "Checking extensions..."
 # Read the .GNOME_EXTENSIONS file and enable each requested extension
 while IFS= read -r EXTENSION; do
     if ! gnome-extensions list | grep -q "^${EXTENSION}$"; then
-        log "'$EXTENSION' not installed"
+        error "Missing extension: $EXTENSION"
     else
+        log "Installed: ${EXTENSION}"
         gnome-extensions enable "${EXTENSION}"
     fi
 done < "$GNOME_EXTENSION_IDS_FILE"

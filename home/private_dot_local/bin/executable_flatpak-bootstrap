@@ -7,19 +7,22 @@ APPLICATION_IDS_FILE="${XDG_CONFIG_HOME:-$HOME/.config}"/.FLATHUB
 ensure_file "$APPLICATION_IDS_FILE"
 ensure_newline "$APPLICATION_IDS_FILE"
 
+info "Checking apps..."
+
 # Check if the Flathub repository is added
 if ! flatpak remotes | grep -q "flathub"; then
     log "Adding Flathub repository..."
     flatpak remote-add --user --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 else
-    log "Already installed: flathub https://flathub.org/repo/flathub.flatpakrepo"
+    log "Installed: flathub https://flathub.org/repo/flathub.flatpakrepo"
 fi
 
 # Read the FLATHUB file and install each application if not already installed
 while IFS= read -r APPLICATION_ID; do
     if flatpak list --user | grep -q "$APPLICATION_ID"; then
-        log "Already installed: $APPLICATION_ID"
+        log "Installed: $APPLICATION_ID"
     else
+        log "Installing $APPLICATION_ID"
         flatpak install --user -y flathub "$APPLICATION_ID"
     fi
 done < "$APPLICATION_IDS_FILE"

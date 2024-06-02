@@ -31,26 +31,44 @@ export SELF
 # (Won't be set if you invoke the `bash` script from another shell like `fish`)
 if [ -z "$BASH" ]; then
     BASH=$(command -v bash)
-    echo "BASH=$BASH"
 fi
+
+BLACK=$(tput setaf 0)
+RED=$(tput setaf 1)
+GREEN=$(tput setaf 2)
+YELLOW=$(tput setaf 3)
+BLUE=$(tput setaf 4)
+MAGENTA=$(tput setaf 5)
+CYAN=$(tput setaf 6)
+WHITE=$(tput setaf 7)
+NO_COLOUR=$(tput sgr0)
 
 # USAGE: log "my message here" "other part of message"
 log() {
     local message="$1"
     shift
-    echo "[+]" "$message" "$@"
+    echo " " "$message" "$@"
 }
 
-# USAGE: die "my error message here"
-die() {
-    echo "[-] Error: $1" >&2
-    exit 1
+# USAGE: info "my message here" "other part of message"
+info() {
+    local message="$1"
+    shift
+    echo "${GREEN}[+]${NO_COLOUR}" "$message" "$@"
 }
 
-# USAGE: please_install curl
-please_install() {
-    local -r package="$1"
-    command -v "$package" &>/dev/null || die "Please install $package and try again."
+# USAGE: warn "my message here" "other part of message"
+warn() {
+    local message="$1"
+    shift
+    echo "${YELLOW}[!]${NO_COLOUR}" "$message" "$@"
+}
+
+# USAGE: error "my message here" "other part of message"
+error() {
+    local message="$1"
+    shift
+    echo "${RED}[-]${NO_COLOUR}" "$message" "$@" >&2
 }
 
 # USAGE: ACCOUNT="$(prompt "Please enter your account number")"
@@ -59,6 +77,18 @@ prompt() {
     local input
     read -p "[?] $message: " -r input
     echo "$input"
+}
+
+# USAGE: die "my error message here"
+die() {
+    error "Error: $1"
+    exit 1
+}
+
+# USAGE: please_install curl
+please_install() {
+    local -r package="$1"
+    command -v "$package" &>/dev/null || die "Please install $package and try again."
 }
 
 # USAGE: run_as_root
