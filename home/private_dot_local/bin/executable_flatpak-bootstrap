@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+# shellcheck source=home/private_dot_local/bin/executable_bash_common
+source "${HOME_ORIGINAL:-$HOME}"/.local/bin/bash_common
+
 APPLICATION_IDS_FILE="${XDG_CONFIG_HOME:-$HOME/.config}"/.FLATHUB
 ensure_file "$APPLICATION_IDS_FILE"
 ensure_newline "$APPLICATION_IDS_FILE"
