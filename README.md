@@ -38,19 +38,6 @@ You only need to run `chezmoi init` when you have rotated your secrets (or added
 
 For more information, see [Start using chezmoi on your current machine](https://www.chezmoi.io/quick-start/#start-using-chezmoi-on-your-current-machine).
 
-### Flatpaks
-
-Download all the apps that you usually use:
-
-```bash
-flatpak-bootstrap
-```
-
-This will also set up `systemd` integration to do a couple of things:
-
-1. automatically update your apps every day.
-2. notify you when your installed apps have drifted from what's written in the configuration.
-
 ### `var`
 
 This folder contains a view of the custom config that I want to mirror to `/var`.

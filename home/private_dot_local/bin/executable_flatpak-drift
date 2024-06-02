@@ -1,50 +1,51 @@
 #!/usr/bin/env bash
 
+# shellcheck source=home/private_dot_local/bin/executable_bash_common
+source "${HOME_ORIGINAL:-$HOME}"/.local/bin/bash_common
+
+please_install flatpak
+please_install notify-send
+
 APPLICATION_IDS_FILE="${XDG_CONFIG_HOME:-$HOME/.config}"/.FLATHUB
+ensure_file "$APPLICATION_IDS_FILE"
+ensure_newline "$APPLICATION_IDS_FILE"
 
-# Read the expected flatpaks
-expected_flatpaks=$(sort "$APPLICATION_IDS_FILE")
+# Convert the lists to arrays (so that we can iterate over them)
+EXPECTED_FLATPAKS=$(sort "$APPLICATION_IDS_FILE")
+INSTALLED_FLATPAKS=$(flatpak --user list --app --columns=application | sort)
+IFS=$'\n' read -rd '' -a EXPECTED_FLATPAKS_ARR <<<"$EXPECTED_FLATPAKS"
+IFS=$'\n' read -rd '' -a INSTALLED_FLATPAKS_ARR <<<"$INSTALLED_FLATPAKS"
 
-# Get the list of installed flatpaks
-installed_flatpaks=$(flatpak --user list --app --columns=application | sort)
-
-# Convert the lists to arrays
-IFS=$'\n' read -rd '' -a expected_array <<<"$expected_flatpaks"
-IFS=$'\n' read -rd '' -a installed_array <<<"$installed_flatpaks"
-
-# Find missing flatpaks
-missing_flatpaks=()
-for expected in "${expected_array[@]}"; do
-  if ! [[ " ${installed_array[*]} " =~ " $expected " ]]; then
-    missing_flatpaks+=("$expected")
+# Figure out which Flatpaks are missing
+MISSING_FLATPAKS=()
+for EXPECTED in "${EXPECTED_FLATPAKS_ARR[@]}"; do
+  if ! [[ " ${INSTALLED_FLATPAKS_ARR[*]} " == *" $EXPECTED "* ]]; then
+    MISSING_FLATPAKS+=("$EXPECTED")
   fi
 done
+if [ ${#MISSING_FLATPAKS[@]} -ne 0 ]; then
+  MISSING_MESSAGE="You need to install: "
+  for MISSING in "${MISSING_FLATPAKS[@]}"; do
+    log "(Missing) $MISSING"
+    MISSING_MESSAGE+="$MISSING, "
+  done
+  MISSING_MESSAGE+="please install any missing apps at your earliest convenience."
+  notify-send --app-name="flatpak-drift" "Missing applications" "$MISSING_MESSAGE"
+fi
 
-# Find extra flatpaks
-extra_flatpaks=()
-for installed in "${installed_array[@]}"; do
-  if ! [[ " ${expected_array[*]} " =~ " $installed " ]]; then
-    extra_flatpaks+=("$installed")
+# Figure out which Flatpaks are not being tracked
+EXTRA_FLATPAKS=()
+for INSTALLED in "${INSTALLED_FLATPAKS_ARR[@]}"; do
+  if ! [[ " ${EXPECTED_FLATPAKS_ARR[*]} " == *" $INSTALLED "* ]]; then
+    EXTRA_FLATPAKS+=("$INSTALLED")
   fi
 done
-
-# Notify re: what needs to be installed.
-if [ ${#missing_flatpaks[@]} -ne 0 ]; then
-  missing_message="You need to install: "
-  for missing in "${missing_flatpaks[@]}"; do
-    missing_message+="$missing, "
+if [ ${#EXTRA_FLATPAKS[@]} -ne 0 ]; then
+  EXTRAS_MESSAGE="I don't recognise: "
+  for EXTRA in "${EXTRA_FLATPAKS[@]}"; do
+    log "(Extra) $EXTRA"
+    EXTRAS_MESSAGE+="$EXTRA, "
   done
-  missing_message+="please install any missing apps at your earliest convenience."
-  notify-send --app-name="flatpak-drift" "Missing applications" "$missing_message"
+  EXTRAS_MESSAGE+="please document them here: $APPLICATION_IDS_FILE."
+  notify-send --app-name="flatpak-drift" "Extra applications" "$EXTRAS_MESSAGE"
 fi
-
-# Notify re: what needs to be cleaned up (or documented)
-if [ ${#extra_flatpaks[@]} -ne 0 ]; then
-  extras_message="I don't recognise: "
-  for extra in "${extra_flatpaks[@]}"; do
-    extras_message+="$extra, "
-  done
-  extras_message+="please document them here: $APPLICATION_IDS_FILE."
-  notify-send --app-name="flatpak-drift" "Extra applications" "$extras_message"
-fi
-

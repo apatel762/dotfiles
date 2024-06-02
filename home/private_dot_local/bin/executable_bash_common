@@ -1,0 +1,114 @@
+#!/usr/bin/env bash
+
+# This snippet helps us find out who our actual $SELF is.
+(return 0 2>/dev/null)
+SOURCED=$?
+if [ $SOURCED -ne 0 ]; then
+    echo "This script is intended to be sourced, not executed directly."
+    exit 1
+elif [ -n "${BASH_SOURCE[*]}" ]; then
+    SOURCE_RELATIVE="${BASH_SOURCE[1]}"
+else
+    SOURCE_RELATIVE=$(caller 0 | awk '{print $2}')
+fi
+SELF=$(cd "$(dirname "$SOURCE_RELATIVE")" && pwd)/$(basename "$SOURCE_RELATIVE")
+export SELF
+
+
+###############################################################################
+#                                                                             #
+#  Include me in your script!                                                 #
+#                                                                             #
+#    # shellcheck source=home/private_dot_local/bin/executable_bash_common    #
+#    source "${HOME_ORIGINAL:-$HOME}"/.local/bin/bash_common                  #
+#                                                                             #
+#  This script contains all the useful functions and features that I          #
+#  commonly use across shell scripts.                                         #
+#                                                                             #
+###############################################################################
+
+# Ensure $BASH is set if not already
+# (Won't be set if you invoke the `bash` script from another shell like `fish`)
+if [ -z "$BASH" ]; then
+    BASH=$(command -v bash)
+    echo "BASH=$BASH"
+fi
+
+# USAGE: log "my message here" "other part of message"
+log() {
+    local message="$1"
+    shift
+    echo "[+]" "$message" "$@"
+}
+
+# USAGE: die "my error message here"
+die() {
+    echo "[-] Error: $1" >&2
+    exit 1
+}
+
+# USAGE: please_install curl
+please_install() {
+    local -r package="$1"
+    command -v "$package" &>/dev/null || die "Please install $package and try again."
+}
+
+# USAGE: ACCOUNT="$(prompt "Please enter your account number")"
+prompt() {
+    local message="$1"
+    local input
+    read -p "[?] $message: " -r input
+    echo "$input"
+}
+
+# USAGE: run_as_root
+run_as_root() {
+    export PROGRAM="${0##*/}"
+    export ARGS=( "$@" )
+    if [[ $UID != 0 ]]; then
+        # preserving the original HOME directory as a variable
+        # so that the root user can still find bash_common
+        export HOME_ORIGINAL="$HOME"
+        exec sudo -E -p "[?] $PROGRAM must be run as root. Please enter the password for %u to continue: " \
+            -- bash -c 'exec "$0" "${@}"' "$SELF" "${ARGS[@]}"
+    else
+        :
+    fi
+}
+
+# USAGE: ensure_file /path/to/file
+ensure_file() {
+    local -r file="$1"
+    [[ ! -f "$file" ]] && die "'$file' not found"
+}
+
+# USAGE: ensure_newline /path/to/file
+ensure_newline() {
+    local -r file="$1"
+    if [ "$(tail -c 1 "$file")" != "" ]; then
+        log "'$file' should contain a newline at the end."
+        die "Please run: echo >> \"$file\""
+    fi
+}
+
+# USAGE: ensure_at_least_bash 4
+ensure_at_least_bash() {
+    local -r version="$1"
+    [[ ${BASH_VERSINFO[0]} -ge "$version" ]] || die "bash ${BASH_VERSINFO[0]} detected, when bash $version+ required"
+}
+
+# USAGE: systemctl_user_enable abc.service
+systemctl_user_enable() {
+    local -r unit="$1"
+    if ! systemctl --user is-enabled "$unit" >/dev/null 2>&1; then
+        systemctl --user enable "$unit"
+    fi
+}
+
+# USAGE: systemctl_user_start abc.service
+systemctl_user_start() {
+    local -r unit="$1"
+    if ! systemctl --user is-active "$unit" >/dev/null 2>&1; then
+        systemctl --user start "$unit"
+    fi
+}
