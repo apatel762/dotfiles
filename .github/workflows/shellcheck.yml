@@ -21,5 +21,4 @@ jobs:
 
       - name: Find and run ShellCheck on all scripts
         run: |
-          # Find all .fish, .bash, and .sh files and run shellcheck on them
-          find . -type f \( -name "*.fish" -o -name "*.bash" -o -name "*.sh" \) -print0 | xargs -0 shellcheck
+          find . -type f \( -name "*.bash" -o -name "*.sh" \) -print0 | xargs -0 shellcheck
