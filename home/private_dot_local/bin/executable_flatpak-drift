@@ -46,6 +46,6 @@ if [ ${#EXTRA_FLATPAKS[@]} -ne 0 ]; then
     log "(Extra) $EXTRA"
     EXTRAS_MESSAGE+="$EXTRA, "
   done
-  EXTRAS_MESSAGE+="please document them here: $APPLICATION_IDS_FILE."
+  EXTRAS_MESSAGE+="please update the documentation here: $APPLICATION_IDS_FILE."
   notify-send --app-name="flatpak-drift" "Extra applications" "$EXTRAS_MESSAGE"
 fi

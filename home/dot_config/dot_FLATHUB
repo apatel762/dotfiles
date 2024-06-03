@@ -5,6 +5,7 @@ com.mattjakeman.ExtensionManager
 com.spotify.Client
 com.vscodium.codium
 io.github.celluloid_player.Celluloid
+it.mijorus.smile
 md.obsidian.Obsidian
 net.ankiweb.Anki
 org.gnome.Boxes

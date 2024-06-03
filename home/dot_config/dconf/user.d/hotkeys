@@ -1,17 +1,24 @@
 [org/gnome/settings-daemon/plugins/media-keys]
-custom-keybindings = ['/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/', '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1/']
-
-[org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0]
-name = 'workspace'
-command = 'gnome-terminal --profile=Workspace'
-binding = '<Primary><Alt>f'
-
-[org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1]
-name = 'terminal'
-command = 'gnome-terminal --profile=Host'
-binding = '<Primary><Alt>t'
+custom-keybindings=['/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/', '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1/', '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom2/']
 
 ##########################################
 # The --profile names must match those   #
 # that are defined in terminal_profiles! #
 ##########################################
+
+[org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0]
+name='Open a workspace session'
+command='gnome-terminal --profile=Workspace'
+binding='<Primary><Alt>f'
+
+[org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1]
+name='Open a host terminal session'
+command='gnome-terminal --profile=Host'
+binding='<Primary><Alt>t'
+
+##########################################
+
+[org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom2]
+name='Open the emoji picker'
+command='flatpak run it.mijorus.smile'
+binding='<Primary><Alt>e'
