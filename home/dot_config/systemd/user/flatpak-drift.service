@@ -4,4 +4,3 @@ Documentation=man:flatpak(1)
 
 [Service]
 ExecStart=%h/.local/bin/flatpak-drift
-

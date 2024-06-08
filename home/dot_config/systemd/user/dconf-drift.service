@@ -1,0 +1,6 @@
+[Unit]
+Description=Check for dconf drift
+Documentation=man:dconf(1)
+
+[Service]
+ExecStart=%h/.local/bin/dconf-drift

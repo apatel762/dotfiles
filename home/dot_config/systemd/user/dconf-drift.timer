@@ -1,0 +1,12 @@
+[Unit]
+Description=Run dconf drift check
+Documentation=man:systemd.timer(5)
+
+[Timer]
+RandomizedDelaySec=10m
+OnBootSec=2m
+OnCalendar=*-*-* 4:00:00
+Persistent=true
+
+[Install]
+WantedBy=timers.target

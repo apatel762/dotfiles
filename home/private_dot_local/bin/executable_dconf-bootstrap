@@ -13,3 +13,11 @@ if [ -d "$DIR" ]; then
         fi
     done
 fi
+
+# Integrate with systemd using the systemd files
+# elsewhere in this repo
+systemctl --user daemon-reload
+
+systemctl_user_enable dconf-drift.service
+systemctl_user_enable dconf-drift.timer
+systemctl_user_start dconf-drift.timer
