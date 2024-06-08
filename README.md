@@ -4,8 +4,6 @@ Managing the mutable directories on my machines.
 
 ## Usage
 
-### Setup
-
 We are using `chezmoi` in a slightly non-standard way. As a result, we need to do some bootstrapping ourselves.
 
 ```bash
@@ -14,7 +12,7 @@ curl -sL https://raw.githubusercontent.com/apatel762/dotfiles/master/chezmoi-boo
 
 After this script has completed, you can run the commands in the next section.
 
-### `home`
+### Setup `/home`
 
 Run:
 
@@ -38,7 +36,7 @@ You only need to run `chezmoi init` when you have rotated your secrets (or added
 
 For more information, see [Start using chezmoi on your current machine](https://www.chezmoi.io/quick-start/#start-using-chezmoi-on-your-current-machine).
 
-### `var`
+### Setup `/var`
 
 This folder contains a view of the custom config that I want to mirror to `/var`.
 
