@@ -6,7 +6,18 @@ find . -type f \
         -o \
         -name "*.sh" \
         -o \
+        -name "*.dash" \
+        -o \
+        -name "*.ksh" \
+        -o \
         -name "executable*" \
     \) \
-    -print0 \
+    -exec sh -c '
+        for file; do
+            if file --mime-type "$file" | grep -q "text/x-shellscript" && \
+               head -n 1 "$file" | grep -qE "^#!.*\b(sh|bash|dash|ksh)\b"; then
+                printf "%s\0" "$file"
+            fi
+        done
+    ' sh {} + \
     | xargs -0 shellcheck
