@@ -1,0 +1,89 @@
+#!/usr/bin/env python
+
+import os
+import subprocess
+import configparser
+from pathlib import Path
+
+
+def get_current_settings():
+    output = subprocess.check_output(["dconf", "dump", "/"], universal_newlines=True)
+    config = configparser.ConfigParser()
+    config.read_string(output)
+    return config
+
+
+def get_file_settings(file_path):
+    config = configparser.ConfigParser()
+    config.read(file_path)
+    return config
+
+
+def compare_settings(current_settings, file_settings):
+    diff = []
+    for section in file_settings.sections():
+        if section not in current_settings.sections():
+            diff.append(f"Section '{section}' is missing in the current settings.")
+            continue
+
+        for key in file_settings[section]:
+            if key not in current_settings[section]:
+                diff.append(
+                    f"Key '{key}' in section '{section}' is missing in the current settings."
+                )
+            elif file_settings[section][key] != current_settings[section][key]:
+                diff.append(f"Value mismatch for key '{key}' in section '{section}':")
+                diff.append(f"  File: {file_settings[section][key]}")
+                diff.append(f"  Current: {current_settings[section][key]}")
+
+    return "\n".join(diff)
+
+
+def send_notification(summary, body):
+    subprocess.run(["notify-send", "--app-name=dconf-drift", summary, body])
+
+
+def main():
+    config_home = Path(os.environ.get("XDG_CONFIG_HOME", "~/.config")).expanduser()
+    cache_home = Path(os.environ.get("XDG_CACHE_HOME", "~/.cache")).expanduser()
+
+    config_dir = config_home / "dconf" / "user.d"
+    diff_file = cache_home / "dconf_diff.txt"
+
+    # Clean up previous run if needed
+    if diff_file.exists():
+        diff_file.unlink()
+
+    current_settings = get_current_settings()
+
+    if not os.path.exists(config_dir):
+        print(f"Configuration directory '{config_dir}' does not exist.")
+        return
+
+    has_diffs = False
+    for file_name in os.listdir(config_dir):
+        file_path = os.path.join(config_dir, file_name)
+        if os.path.isfile(file_path):
+            file_settings = get_file_settings(file_path)
+            diff = compare_settings(current_settings, file_settings)
+
+            if diff:
+                has_diffs = True
+                with diff_file.open("a") as f:
+                    drift_detected = f"Drift detected in {file_path}"
+                    f.write("=" * (len(drift_detected) + 4) + "\n")
+                    f.write(f"= {drift_detected} =" + "\n")
+                    f.write("=" * (len(drift_detected) + 4) + "\n")
+                    f.write(diff + "\n")
+                    f.write("\n")
+
+    if has_diffs:
+        print(f"Configuration drift detected, see: {diff_file}")
+        send_notification(
+            summary="Configuration drift detected",
+            body=f"Please see the full diff here: {diff_file}",
+        )
+
+
+if __name__ == "__main__":
+    main()
