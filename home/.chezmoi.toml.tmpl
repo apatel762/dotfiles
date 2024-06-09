@@ -37,3 +37,12 @@ address = "{{ keepassxcAttribute "/Main/Mullvad" "Interface Address" }}"
 [data.mullvad.peer]
 public_key = "{{ keepassxcAttribute "/Main/Mullvad" "Peer Public Key" }}"
 endpoint = "{{ keepassxcAttribute "/Main/Mullvad" "Peer Endpoint" }}"
+
+[data.yubikey]
+# These are not secrets but might as well template them
+# in case my key breaks so that I can update them in a
+# single place.
+# They are from the output of `pamu2fcfg`
+pam_u2f_key_handle = "{{ keepassxcAttribute "/Local/Yubikey for Workstation" "PAM U2F Key Handle" }}"
+pam_u2f_pubkey = "{{ keepassxcAttribute "/Local/Yubikey for Workstation" "PAM U2F Public Key" }}"
+pam_u2f_algo = "{{ keepassxcAttribute "/Local/Yubikey for Workstation" "PAM U2F Algo" }}"
