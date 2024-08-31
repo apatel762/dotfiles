@@ -3,13 +3,5 @@
 # shellcheck source=home/private_dot_local/bin/executable_bash_common
 source "${HOME_ORIGINAL:-$HOME}"/.local/bin/bash_common
 
-please_install git
-please_install ghq
-
-ghq get --update https://github.com/rafaelmardojai/firefox-gnome-theme.git
-
-# install the theme
-(
-    cd "$(ghq list -p github.com/rafaelmardojai/firefox-gnome-theme)" || exit 1
-    ./scripts/auto-install.sh
-)
+please_install firefox-bootstrap \
+    && firefox-bootstrap
