@@ -22,7 +22,8 @@ After=local-fs.target
 
 [Container]
 Image=quay.io/redlib/redlib:latest
-PublishPort=8081:8080
+PublishPort=8080
+Pull=newer
 
 [Install]
 # Start by default on boot
