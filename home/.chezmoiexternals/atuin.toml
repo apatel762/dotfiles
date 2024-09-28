@@ -1,7 +1,8 @@
 [".local/bin/atuin"]
   type = "archive-file"
-  url = "https://github.com/atuinsh/atuin/releases/download/v18.2.0/atuin-v18.2.0-x86_64-unknown-linux-gnu.tar.gz"
-  path = "atuin-v18.2.0-x86_64-unknown-linux-gnu/atuin"
+  url = "https://github.com/atuinsh/atuin/releases/download/v18.3.0/atuin-x86_64-unknown-linux-gnu.tar.gz"
+  path = "atuin-x86_64-unknown-linux-gnu/atuin"
 
+  # This is the checksum of the downloaded `.tar.gz` container
   [".local/bin/atuin".checksum]
-    sha256 = "51ce72545c626a97149e6d141ca53e3f378895568ad39a99e5adace8b95fb6e5"
+    sha256 = "e3716dfb8a68dbf8992c11dbb6cb9be746cf69a32b80075553c94614c7311792"
