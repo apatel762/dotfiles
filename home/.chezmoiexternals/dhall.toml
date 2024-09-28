@@ -1,10 +1,8 @@
-# FROM https://github.com/dhall-lang/dhall-haskell/releases/tag/1.42.0
-# (The checksums are calculated using the downloaded `.tar.bz2` containers!)
-
 [".local/bin/dhall"]
   type = "archive-file"
   url = "https://github.com/dhall-lang/dhall-haskell/releases/download/1.42.0/dhall-1.42.0-x86_64-linux.tar.bz2"
   path = "./bin/dhall"
 
+  # This is the checksum of the downloaded `.tar.bz2` container
   [".local/bin/dhall".checksum]
     sha256 = "23721443c52417c2116dbebf551c6413f2744078ef645d9334492ca21ac51dde"

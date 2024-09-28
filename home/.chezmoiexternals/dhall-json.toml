@@ -1,0 +1,22 @@
+# The checksums are calculated using the downloaded `.tar.bz2` containers
+
+[".local/bin/dhall-to-json"]
+  type = "archive-file"
+  url = "https://github.com/dhall-lang/dhall-haskell/releases/download/1.42.0/dhall-json-1.7.12-x86_64-linux.tar.bz2"
+  path = "./bin/dhall-to-json"
+  [".local/bin/dhall-to-json".checksum]
+    sha256 = "5c2d71296243d2f9f637026b5a4bfa4a2f59539ed8053e920628356554a9a227"
+
+[".local/bin/dhall-to-yaml"]
+  type = "archive-file"
+  url = "https://github.com/dhall-lang/dhall-haskell/releases/download/1.42.0/dhall-json-1.7.12-x86_64-linux.tar.bz2"
+  path = "./bin/dhall-to-yaml"
+  [".local/bin/dhall-to-yaml".checksum]
+    sha256 = "5c2d71296243d2f9f637026b5a4bfa4a2f59539ed8053e920628356554a9a227"
+
+[".local/bin/json-to-dhall"]
+  type = "archive-file"
+  url = "https://github.com/dhall-lang/dhall-haskell/releases/download/1.42.0/dhall-json-1.7.12-x86_64-linux.tar.bz2"
+  path = "./bin/json-to-dhall"
+  [".local/bin/json-to-dhall".checksum]
+    sha256 = "5c2d71296243d2f9f637026b5a4bfa4a2f59539ed8053e920628356554a9a227"
