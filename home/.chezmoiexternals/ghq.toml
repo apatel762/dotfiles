@@ -1,7 +1,8 @@
 [".local/bin/ghq"]
   type = "archive-file"
-  url = "https://github.com/x-motemen/ghq/releases/download/v1.6.1/ghq_linux_amd64.zip"
+  url = "https://github.com/x-motemen/ghq/releases/download/v1.6.2/ghq_linux_amd64.zip"
   path = "ghq_linux_amd64/ghq"
 
+  # This is the checksum of the downloaded `.zip` container
   [".local/bin/ghq".checksum]
-    sha256 = "fa121c76c14608175c52fc0ea53a584f20dda96bcec66909b5f7ee8b75715163"
+    sha256 = "b4883f3b4e4771e95bcb34c3e262d48bf2a76a1148aa46edd273bf347c924a4c"
