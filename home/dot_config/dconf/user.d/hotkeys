@@ -8,12 +8,12 @@ custom-keybindings=['/org/gnome/settings-daemon/plugins/media-keys/custom-keybin
 
 [org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0]
 name='Open a workspace session'
-command='gnome-terminal --profile=Workspace'
+command='ptyxis --tab-with-profile=208646480ec1a034d968aeb26743125d'
 binding='<Primary><Alt>f'
 
 [org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1]
 name='Open a host terminal session'
-command='gnome-terminal --profile=Host'
+command='ptyxis --tab-with-profile=51e9484c0a243a488476726467430d78'
 binding='<Primary><Alt>t'
 
 ##########################################
