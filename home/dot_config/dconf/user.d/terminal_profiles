@@ -7,7 +7,7 @@ font-name='IosevkaTerm Nerd Font Medium 15'
 interface-style='dark'
 profile-uuids=['51e9484c0a243a488476726467430d78', '208646480ec1a034d968aeb26743125d']
 use-system-font=false
-window-size=(uint32 232, uint32 52)
+window-size=(uint32 247, uint32 66)
 
 ##############################
 # terminal profile - Toolbox #
