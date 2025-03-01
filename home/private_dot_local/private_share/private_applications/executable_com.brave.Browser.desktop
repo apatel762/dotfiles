@@ -1,6 +1,5 @@
-# I have added extra args to the [Exec] command!
-# --enable-features=TouchpadOverscrollHistoryNavigation,UseOzonePlatform --ozone-platform=wayland
-# Everything else is using defaults.
+# Check diff
+# diff -u --color ~/.local/share/flatpak/exports/share/applications/com.brave.Browser.desktop home/private_dot_local/private_share/private_applications/executable_com.brave.Browser.desktop
 
 [Desktop Entry]
 Version=1.0
