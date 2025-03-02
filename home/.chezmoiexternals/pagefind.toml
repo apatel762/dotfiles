@@ -1,0 +1,8 @@
+[".local/bin/pagefind"]
+  type = "archive-file"
+  url = "https://github.com/CloudCannon/pagefind/releases/download/v1.3.0/pagefind-v1.3.0-x86_64-unknown-linux-musl.tar.gz"
+  path = "pagefind"
+
+  [".local/bin/pagefind".checksum]
+  # This is the checksum of the downloaded `.tar.gz` container
+    sha256 = "5dfb56609c2d08058c3be56a1a2d332d8dc50d9a6c74f20b3619eadb53240af3"
