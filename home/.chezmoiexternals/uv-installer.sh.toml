@@ -1,0 +1,6 @@
+[".local/bin/uv-installer.sh"]
+  type = "file"
+  executable = true
+  url = "https://astral.sh/uv/install.sh"
+  urls = [ "https://github.com/astral-sh/uv/releases/latest/download/uv-installer.sh" ]
+  refreshPeriod = "168h"
