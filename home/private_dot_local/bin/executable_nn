@@ -3,8 +3,8 @@
 # shellcheck source=home/private_dot_local/bin/executable_bash_common
 source "${HOME_ORIGINAL:-$HOME}"/.local/bin/bash_common
 
-if [[ -z "${EDITOR}" ]]; then
-    die "EDITOR must be set"
+if [[ -z "${XDG_DATA_HOME}" ]]; then
+    die "XDG_DATA_HOME must be set"
 fi
 
 if [[ -z "${NN_DIR}" ]]; then
@@ -18,6 +18,13 @@ please_install gum
 please_install dirname
 please_install tr
 please_install sed
+
+# DESC: open the requested file inside the vscodium workspace
+# ARGS: $1 = the file to open (ensure that this is a file!)
+_open() {
+    local -r VSCODIUM="$XDG_DATA_HOME/flatpak/exports/bin/com.vscodium.codium"
+    "$VSCODIUM" "$NN_DIR" --goto "$1"
+}
 
 new_file() {
     local SELECTED
@@ -50,12 +57,11 @@ EOF
 
     # Close the YAML frontmatter
     echo "---" >> "$FILE"
-    info "$FILE"
-    $EDITOR "$FILE"
+    _open "$FILE"
 }
 
 edit_file() {
-    $EDITOR "$(gum file --header "Select a page to edit" --all --file "$NN_DIR"/content/)"
+    _open "$(gum file --header "Select a page to edit" --all --file "$NN_DIR"/content/)"
 }
 
 main() {
