@@ -109,7 +109,13 @@ run_as_root() {
 # USAGE: ensure_file /path/to/file
 ensure_file() {
     local -r file="$1"
-    [[ ! -f "$file" ]] && die "'$file' not found"
+    [[ ! -f "$file" ]] && die "File '$file' not found"
+}
+
+# USAGE: ensure_directory /path/to/directory
+ensure_directory() {
+    local -r directory="$1"
+    [[ ! -d "$directory" ]] && die "Directory '$directory' does not exist"
 }
 
 # USAGE: ensure_newline /path/to/file
