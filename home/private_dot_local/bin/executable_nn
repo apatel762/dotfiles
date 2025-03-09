@@ -1,0 +1,79 @@
+#!/usr/bin/env bash
+
+# shellcheck source=home/private_dot_local/bin/executable_bash_common
+source "${HOME_ORIGINAL:-$HOME}"/.local/bin/bash_common
+
+if [[ -z "${EDITOR}" ]]; then
+    die "EDITOR must be set"
+fi
+
+if [[ -z "${NN_DIR}" ]]; then
+    die "NN_DIR must be set. This should point to the zola site root dir (NOT the contents/ dir)"
+else
+    ensure_directory "${NN_DIR}"
+    info "NN_DIR is $NN_DIR"
+fi
+
+please_install gum
+please_install dirname
+please_install tr
+please_install sed
+
+new_file() {
+    local SELECTED
+    SELECTED="$(gum file --header "Where should your new page go?" --directory "$NN_DIR"/content/)"
+    [ -f "$SELECTED" ] && SELECTED=$(dirname "$SELECTED")
+
+    local -r TITLE="$(gum input --placeholder="Page title")"
+    [ -z "$TITLE" ] && die "You must provide a page title"
+    local -r TAGS="$(gum input --placeholder="Which tags should be added to this page? (comma-separated)")"
+    [ -z "$TAGS" ] && die "You must provide tags"
+
+    local -r DATE="$(date --iso-8601=seconds)"
+    local -r SLUG="$(echo "$TITLE" | tr '[:upper:]' '[:lower:]' | sed -E 's/[^a-z0-9]+/-/g; s/^-|-$//g')"
+    local -r FILE="$SELECTED/$SLUG.md"
+
+    cat <<EOF > "$FILE"
+---
+title: $TITLE
+slug: $SLUG
+date: $DATE
+taxonomies:
+  tags:
+EOF
+
+    # Append each tag to the file with a four space indent
+    IFS=',' read -ra TAG_ARRAY <<< "$TAGS"
+    for TAG in "${TAG_ARRAY[@]}"; do
+        echo "    - $TAG" >> "$FILE"
+    done
+
+    # Close the YAML frontmatter
+    echo "---" >> "$FILE"
+    info "$FILE"
+    $EDITOR "$FILE"
+}
+
+edit_file() {
+    $EDITOR "$(gum file --header "Select a page to edit" --all --file "$NN_DIR"/content/)"
+}
+
+main() {
+    local -r NEW_FILE="New file"
+    local -r EDIT_FILE="Edit existing file"
+    local -r CHOICE="$(gum choose "$NEW_FILE" "$EDIT_FILE" --header="What would you like to do?")"
+
+    case $CHOICE in
+        "$NEW_FILE")
+            new_file
+            ;;
+        "$EDIT_FILE")
+            edit_file
+            ;;
+        *)
+            :
+            ;;
+    esac
+}
+
+main
