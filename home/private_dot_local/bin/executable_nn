@@ -91,12 +91,20 @@ edit_file() {
     _open "$(gum file --header "Select a page to edit" --all --file "$NN_DIR"/content/)"
 }
 
+web_clip() {
+    # make current year web clip section if not exists
+    # make new file with 
+    :
+    die "not implemented, cannot clip web pages"
+}
+
 main() {
     local -r NEW_FILE="New file"
     local -r NEW_SECTION="New section"
     local -r EDIT_FILE="Edit existing file"
+    local -r WEB_CLIP="Web clip"
 
-    local -r CHOICE="$(gum choose "$NEW_FILE" "$NEW_SECTION" "$EDIT_FILE" --header="What would you like to do?")"
+    local -r CHOICE="$(gum choose "$NEW_FILE" "$NEW_SECTION" "$EDIT_FILE" "$WEB_CLIP" --header="What would you like to do?")"
 
     case $CHOICE in
         "$NEW_FILE")
@@ -107,6 +115,9 @@ main() {
             ;;
         "$EDIT_FILE")
             edit_file
+            ;;
+        "$WEB_CLIP")
+            web_clip
             ;;
         *)
             :
