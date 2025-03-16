@@ -115,8 +115,7 @@ EOF
     fi
 
     # make page for citation
-
-    local -r CITATION_PAGE="$WEB_CLIP_DIR/$(date +%Y%m%d%H%M%S).md"
+    local -r CITATION_PAGE="$WEB_CLIP_DIR/$(date +%m%d-%H%M%S).md"
     local -r TITLE="Web clip from $(date +"%A %d %B")"
     local -r SLUG="$(echo "${URL}" | tr '[:upper:]' '[:lower:]' | sed -E 's/https?:\/\/(www\.)?//g' | sed -E 's/[^a-z0-9]+/-/g' | sed -E 's/^-+|-+$//g')"
     local -r CITATION="$(cite "$URL" 2> "$XDG_CACHE_HOME/cite_error.$$")"
