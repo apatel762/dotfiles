@@ -60,18 +60,53 @@ EOF
     _open "$FILE"
 }
 
+new_section() {
+    local SECTION_PARENT_DIR
+    SECTION_PARENT_DIR="$(gum file --header "Where should your new section be adjacent to?" --directory "$NN_DIR"/content/)"
+    [ -f "$SECTION_PARENT_DIR" ] && SECTION_PARENT_DIR=$(dirname "$SECTION_PARENT_DIR")
+
+    local -r TITLE="$(gum input --placeholder="Section title")"
+    [ -z "$TITLE" ] && die "You must provide a section title"
+
+    local SLUG
+    SLUG="$(echo "$TITLE" | tr '[:upper:]' '[:lower:]' | sed -E 's/[^a-z0-9]+/-/g; s/^-|-$//g')"
+    local -r SLUG="$(gum input --placeholder="Section slug" --value="$SLUG")"
+    # sanity check
+    [ -z "$SLUG" ] && die "You must provide a section slug"
+
+    local -r SECTION_DIR="$SECTION_PARENT_DIR/$SLUG"
+    local -r INDEX_MD="$SECTION_DIR/_index.md"
+
+    # create dirs and files
+    mkdir -pv "$SECTION_DIR"
+    cat <<EOF > "$INDEX_MD"
+---
+title: $TITLE
+sort_by: date
+---
+
+A section about: $TITLE
+EOF
+    _open "$INDEX_MD"
+}
+
 edit_file() {
     _open "$(gum file --header "Select a page to edit" --all --file "$NN_DIR"/content/)"
 }
 
 main() {
     local -r NEW_FILE="New file"
+    local -r NEW_SECTION="New section"
     local -r EDIT_FILE="Edit existing file"
-    local -r CHOICE="$(gum choose "$NEW_FILE" "$EDIT_FILE" --header="What would you like to do?")"
+
+    local -r CHOICE="$(gum choose "$NEW_FILE" "$NEW_SECTION" "$EDIT_FILE" --header="What would you like to do?")"
 
     case $CHOICE in
         "$NEW_FILE")
             new_file
+            ;;
+        "$NEW_SECTION")
+            new_section
             ;;
         "$EDIT_FILE")
             edit_file
