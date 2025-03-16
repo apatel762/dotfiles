@@ -62,7 +62,7 @@ EOF
 
 new_section() {
     local SECTION_PARENT_DIR
-    SECTION_PARENT_DIR="$(gum file --header "Where should your new section be adjacent to?" --directory "$NN_DIR"/content/)"
+    SECTION_PARENT_DIR="$(gum file --header="Where should your new section be adjacent to?" --directory "$NN_DIR"/content/)"
     [ -f "$SECTION_PARENT_DIR" ] && SECTION_PARENT_DIR=$(dirname "$SECTION_PARENT_DIR")
 
     local -r TITLE="$(gum input --placeholder="Section title")"
@@ -92,10 +92,48 @@ edit_file() {
 }
 
 web_clip() {
-    # make current year web clip section if not exists
-    # make new file with 
-    :
-    die "not implemented, cannot clip web pages"
+    local -r URL="$(gum input --header="Which URL do you want to clip?" --placeholder="https://...")"
+    [ -z "$URL" ] && die "You must provide a URL"
+
+    local -r SECTION="$(date +%Y)"
+    local -r WEB_CLIP_DIR="$NN_DIR/content/groups/web-clips/$(date +%Y)"
+    local -r WEB_CLIP_INDEX="$WEB_CLIP_DIR/_index.md"
+
+    # make current year web clip section (if not exists)
+    mkdir -pv "$WEB_CLIP_DIR"
+
+    # make current year index file (if not exists)
+    if [ ! -f "$WEB_CLIP_INDEX" ]; then
+        cat <<EOF > "$WEB_CLIP_INDEX"
+---
+title: $SECTION
+sort_by: date
+---
+
+Web clips from $SECTION
+EOF
+    fi
+
+    # make page for citation
+
+    local -r CITATION_PAGE="$WEB_CLIP_DIR/$(date +%Y%m%d%H%M%S).md"
+    local -r TITLE="Web clip from $(date +"%A %d %B")"
+    local -r SLUG="$(echo "${URL}" | tr '[:upper:]' '[:lower:]' | sed -E 's/https?:\/\/(www\.)?//g' | sed -E 's/[^a-z0-9]+/-/g' | sed -E 's/^-+|-+$//g')"
+    local -r CITATION="$(cite "$URL" 2> "$XDG_CACHE_HOME/cite_error.$$")"
+    cat <<EOF > "$CITATION_PAGE"
+---
+title: $TITLE
+slug: $SLUG
+date: $(date --iso-8601=seconds)
+taxonomies:
+  tags:
+    - web-clip
+---
+
+$CITATION
+EOF
+
+    _open "$CITATION_PAGE"
 }
 
 main() {

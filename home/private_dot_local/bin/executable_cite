@@ -1,0 +1,118 @@
+#!/usr/bin/env -S uv run --script
+# /// script
+# requires-python = ">=3.13"
+# dependencies = [
+#     "beautifulsoup4",
+#     "requests",
+# ]
+# ///
+
+import sys
+import requests
+from bs4 import BeautifulSoup
+from urllib.parse import urlparse
+from datetime import datetime
+import re
+
+
+def clip_webpage(url):
+    # Fetch the webpage
+    try:
+        response = requests.get(url, headers={"User-Agent": "Mozilla/5.0"})
+        response.raise_for_status()
+        html = response.text
+    except Exception as e:
+        print(f"Error fetching URL: {e}", file=sys.stderr)
+        sys.exit(1)
+
+    # Parse HTML
+    soup = BeautifulSoup(html, "html.parser")
+
+    # Extract title
+    title = soup.title.string.strip() if soup.title else "Untitled Page"
+
+    # Extract domain from URL
+    domain = urlparse(url).netloc
+
+    # Extract author
+    author = None
+    # Try meta tags
+    meta_author = soup.find("meta", {"name": "author"})
+    if meta_author and meta_author.get("content"):
+        author = meta_author.get("content")
+
+    # Try schema.org markup
+    if not author:
+        author_tag = soup.find(["span", "div", "a"], {"itemprop": "author"})
+        if author_tag:
+            author = author_tag.get_text().strip()
+
+    # Try Open Graph
+    if not author:
+        og_author = soup.find("meta", {"property": "og:author"})
+        if og_author and og_author.get("content"):
+            author = og_author.get("content")
+
+    # Format author or use domain as fallback
+    if author:
+        # Try to format as "Surname, Firstname" if possible
+        parts = author.split()
+        if len(parts) > 1:
+            author = f"{' '.join(parts[1:])}, {parts[0]}"
+    else:
+        author = domain
+
+    # Extract date
+    year = None
+    date_patterns = [
+        ("meta", {"property": "article:published_time"}),
+        ("meta", {"property": "article:modified_time"}),
+        ("meta", {"name": "date"}),
+        ("meta", {"name": "pubdate"}),
+        ("time", {"datetime": True}),
+    ]
+
+    for tag, attrs in date_patterns:
+        if year:
+            break
+
+        if tag == "time" and "datetime" in attrs and attrs["datetime"]:
+            elements = soup.find_all(tag)
+            for el in elements:
+                if el.has_attr("datetime"):
+                    date_str = el["datetime"]
+                    match = re.search(r"(\d{4})", date_str)
+                    if match:
+                        year = match.group(1)
+                        break
+        else:
+            element = soup.find(tag, attrs)
+            if element and element.get("content"):
+                date_str = element.get("content")
+                match = re.search(r"(\d{4})", date_str)
+                if match:
+                    year = match.group(1)
+
+    # Format date part
+    date_part = f" ({year})" if year else ""
+
+    # Get current date for "Retrieved" part
+    today = datetime.now().strftime("%B %d, %Y")
+
+    # Create wayback machine URL
+    wayback_timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
+    wayback_url = f"https://web.archive.org/web/{wayback_timestamp}/{url}"
+
+    # Format the markdown citation
+    citation = f'{author}{date_part}. "[{title}]({url})". [Archived]({wayback_url}). Retrieved {today}.'
+
+    return citation
+
+
+if __name__ == "__main__":
+    if len(sys.argv) != 2:
+        print(f"Usage: {sys.argv[0]} <url>")
+        sys.exit(1)
+
+    url = sys.argv[1]
+    print(clip_webpage(url))
