@@ -68,10 +68,7 @@ new_section() {
     local -r TITLE="$(gum input --placeholder="Section title")"
     [ -z "$TITLE" ] && die "You must provide a section title"
 
-    local SLUG
-    SLUG="$(echo "$TITLE" | tr '[:upper:]' '[:lower:]' | sed -E 's/[^a-z0-9]+/-/g; s/^-|-$//g')"
-    local -r SLUG="$(gum input --placeholder="Section slug" --value="$SLUG")"
-    # sanity check
+    local -r SLUG="$(echo "$TITLE" | tr '[:upper:]' '[:lower:]' | sed -E 's/[^a-z0-9]+/-/g; s/^-|-$//g')"
     [ -z "$SLUG" ] && die "You must provide a section slug"
 
     local -r SECTION_DIR="$SECTION_PARENT_DIR/$SLUG"
