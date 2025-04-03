@@ -96,7 +96,7 @@ web_clip() {
     [ -z "$URL" ] && die "You must provide a URL"
 
     local -r SECTION="$(date +%Y)"
-    local -r WEB_CLIP_DIR="$NN_DIR/content/groups/web-clips/$(date +%Y)"
+    local -r WEB_CLIP_DIR="$NN_DIR/content/n/clips/$(date +%Y)"
     local -r WEB_CLIP_INDEX="$WEB_CLIP_DIR/_index.md"
 
     # make current year web clip section (if not exists)
@@ -126,7 +126,7 @@ slug: $SLUG
 date: $(date --iso-8601=seconds)
 taxonomies:
   tags:
-    - web-clip
+    - bookmark
 ---
 
 $CITATION
