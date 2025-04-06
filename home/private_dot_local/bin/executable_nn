@@ -95,11 +95,11 @@ web_clip() {
     local -r URL="$(gum input --header="Which URL do you want to clip?" --placeholder="https://...")"
     [ -z "$URL" ] && die "You must provide a URL"
 
+    # Every web clip is under a YEAR directory...
     local -r SECTION="$(date +%Y)"
-    local -r WEB_CLIP_DIR="$NN_DIR/content/n/clips/$(date +%Y)"
+    local -r WEB_CLIP_DIR="$NN_DIR/content/n/clips/$SECTION"
     local -r WEB_CLIP_INDEX="$WEB_CLIP_DIR/_index.md"
 
-    # make current year web clip section (if not exists)
     mkdir -pv "$WEB_CLIP_DIR"
 
     # make current year index file (if not exists)
@@ -114,8 +114,28 @@ Web clips from $SECTION
 EOF
     fi
 
+    # And then every YEAR directory has a MONTH subdirectory...
+    local -r SUBSECTION="$(date +%m)"
+    local -r SUBSECTION_TITLE="$(date +%B)"
+    local -r SUBSECTION_DIR="$WEB_CLIP_DIR/$SUBSECTION"
+    local -r SUBSECTION_INDEX="$SUBSECTION_DIR/_index.md"
+
+    mkdir -pv "$SUBSECTION_DIR"
+
+    # make current year index file (if not exists)
+    if [ ! -f "$SUBSECTION_INDEX" ]; then
+        cat <<EOF > "$SUBSECTION_INDEX"
+---
+title: $SUBSECTION_TITLE
+sort_by: date
+---
+
+Web clips from $SUBSECTION_TITLE $SECTION
+EOF
+    fi
+
     # make page for citation
-    local -r CITATION_PAGE="$WEB_CLIP_DIR/$(date +%m%d-%H%M%S).md"
+    local -r CITATION_PAGE="$SUBSECTION_DIR/$(date +%d-%H%M%S).md"
     local -r TITLE="Web clip from $(date +"%A %d %B")"
     local -r SLUG="$(echo "${URL}" | tr '[:upper:]' '[:lower:]' | sed -E 's/https?:\/\/(www\.)?//g' | sed -E 's/[^a-z0-9]+/-/g' | sed -E 's/^-+|-+$//g')"
     local -r CITATION="$(cite "$URL" 2> "$XDG_CACHE_HOME/cite_error.$$")"
