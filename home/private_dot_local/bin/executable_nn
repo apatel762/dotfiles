@@ -155,13 +155,27 @@ EOF
     _open "$CITATION_PAGE"
 }
 
+link_to_page() {
+    local -r PAGE="$(gum file --header "What file do you want to link to?" --all --file "$NN_DIR"/content/)"
+    [ -z "$PAGE" ] && die "You must select a page"
+
+    if [[ ! "$PAGE" =~ \.(md|markdown)$ ]]; then
+        die "You must select a markdown file"
+    fi
+
+    local -r RELATIVE_PATH="${PAGE#"$NN_DIR"/content/}"
+    copy "$RELATIVE_PATH"
+    info "Copied to clipboard: $RELATIVE_PATH"
+}
+
 main() {
     local -r NEW_FILE="New file"
     local -r NEW_SECTION="New section"
     local -r EDIT_FILE="Edit existing file"
     local -r WEB_CLIP="Web clip"
+    local -r LINK_TO_PAGE="Link to page"
 
-    local -r CHOICE="$(gum choose "$NEW_FILE" "$NEW_SECTION" "$EDIT_FILE" "$WEB_CLIP" --header="What would you like to do?")"
+    local -r CHOICE="$(gum choose "$NEW_FILE" "$NEW_SECTION" "$EDIT_FILE" "$WEB_CLIP" "$LINK_TO_PAGE" --header="What would you like to do?")"
 
     case $CHOICE in
         "$NEW_FILE")
@@ -175,6 +189,9 @@ main() {
             ;;
         "$WEB_CLIP")
             web_clip
+            ;;
+        "$LINK_TO_PAGE")
+            link_to_page
             ;;
         *)
             :
