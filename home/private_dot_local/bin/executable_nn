@@ -134,14 +134,17 @@ Web clips from $SUBSECTION_TITLE $SECTION
 EOF
     fi
 
-    # make page for citation
-    local -r CITATION_PAGE="$SUBSECTION_DIR/$(date +%d-%H%M%S).md"
-    local -r TITLE="Web clip from $(date +"%A %d %B")"
+    # And then every clip should have its own subdirectory named after the site slug...
     local -r SLUG="$(echo "${URL}" | tr '[:upper:]' '[:lower:]' | sed -E 's/https?:\/\/(www\.)?//g' | sed -E 's/[^a-z0-9]+/-/g' | sed -E 's/^-+|-+$//g')"
+    local -r CITATION_DIR="$SUBSECTION_DIR/$SLUG"
+    mkdir -pv "$CITATION_DIR"
+
+    # make page for citation
+    local -r CITATION_PAGE="$CITATION_DIR/index.md"
     local -r CITATION="$(cite "$URL" 2> "$XDG_CACHE_HOME/cite_error.$$")"
     cat <<EOF > "$CITATION_PAGE"
 ---
-title: $TITLE
+title: $SLUG
 slug: $SLUG
 date: $(date --iso-8601=seconds)
 taxonomies:
@@ -153,6 +156,10 @@ $CITATION
 EOF
 
     _open "$CITATION_PAGE"
+
+    local -r RELATIVE_PATH="${CITATION_PAGE#"$NN_DIR"/content/}"
+    copy "@/$RELATIVE_PATH"
+    info "Copied to clipboard: $RELATIVE_PATH"
 }
 
 link_to_page() {
