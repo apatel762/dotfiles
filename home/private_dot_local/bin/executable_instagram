@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+
+# shellcheck source=home/private_dot_local/bin/executable_bash_common
+source "${HOME_ORIGINAL:-$HOME}"/.local/bin/bash_common
+
+LAUNCHER="$HOME/.local/share/flatpak/exports/bin/com.google.Chrome"
+
+please_install mullvad-exclude
+please_install flatpak
+ensure_file "$LAUNCHER"
+
+mullvad-exclude "$LAUNCHER" \
+    '--profile-directory=Default' \
+    '--app-id=akpamiohjfcnimfljfndmaldlcfphjmp' \
+    &
+
+
+info "Instagram should now be running."
+warn "You can exit this terminal session"
+exit
