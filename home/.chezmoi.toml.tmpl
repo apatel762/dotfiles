@@ -28,16 +28,6 @@ name = "Arjun Patel"
 signing_key = "{{ keepassxcAttribute "/Local/GPG Key" "Public key signature" }}"
 auth_token = "{{ keepassxcAttribute "/Main/GitHub" "Auth Token" }}"
 
-[data.mullvad]
-[data.mullvad.interface]
-device = "{{ keepassxcAttribute "/Main/Mullvad" "Device Name" }}"
-private_key = "{{ keepassxcAttribute "/Main/Mullvad" "Interface Private Key" }}"
-address = "{{ keepassxcAttribute "/Main/Mullvad" "Interface Address" }}"
-
-[data.mullvad.peer]
-public_key = "{{ keepassxcAttribute "/Main/Mullvad" "Peer Public Key" }}"
-endpoint = "{{ keepassxcAttribute "/Main/Mullvad" "Peer Endpoint" }}"
-
 [data.yubikey]
 # These are not secrets but might as well template them
 # in case my key breaks so that I can update them in a
